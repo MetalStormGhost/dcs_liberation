@@ -128,7 +128,7 @@ class FlightPlan:
 
     @property
     def combat_speed_waypoints(self) -> set[FlightWaypoint]:
-        raise NotImplementedError
+        return set()
 
     def fuel_consumption_between_points(
         self, a: FlightWaypoint, b: FlightWaypoint
@@ -541,6 +541,10 @@ class CasFlightPlan(PatrollingFlightPlan):
             yield self.divert
         yield self.bullseye
 
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.patrol_start, self.target, self.patrol_end}
+
     def request_escort_at(self) -> Optional[FlightWaypoint]:
         return self.patrol_start
 
@@ -568,6 +572,10 @@ class TarCapFlightPlan(PatrollingFlightPlan):
         if self.divert is not None:
             yield self.divert
         yield self.bullseye
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.patrol_start, self.patrol_end}
 
     @property
     def tot_offset(self) -> timedelta:
@@ -731,6 +739,10 @@ class SweepFlightPlan(LoiterFlightPlan):
         if self.divert is not None:
             yield self.divert
         yield self.bullseye
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.sweep_end}
 
     @property
     def tot_waypoint(self) -> Optional[FlightWaypoint]:
