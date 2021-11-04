@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import Any, Optional, List, TYPE_CHECKING
+from typing import Any, List, Optional, TYPE_CHECKING
+
+from dcs.planes import C_101CC, C_101EB, Su_33
 
 from gen.flights.loadouts import Loadout
-
 from .flightroster import FlightRoster
+from .flightstate import FlightState, Uninitialized
 
 if TYPE_CHECKING:
     from game.dcs.aircrafttype import AircraftType
+    from game.sim.aircraftengagementzones import AircraftEngagementZones
     from game.squadrons import Squadron, Pilot
     from game.theater import ControlPoint, MissionTarget
     from game.transfers import TransferOrder
@@ -40,8 +43,6 @@ class Flight:
             self.roster = FlightRoster(self.squadron, initial_size=count)
         else:
             self.roster = roster
-        self.departure = self.squadron.location
-        self.arrival = self.squadron.arrival
         self.divert = divert
         self.flight_type = flight_type
         # TODO: Replace with FlightPlan.
@@ -54,6 +55,9 @@ class Flight:
         # Only used by transport missions.
         self.cargo = cargo
 
+        # Used for simulating the travel to first contact.
+        self.state: FlightState = Uninitialized(self, squadron.settings)
+
         # Will be replaced with a more appropriate FlightPlan by
         # FlightPlanBuilder, but an empty flight plan the flight begins with an
         # empty flight plan.
@@ -62,6 +66,27 @@ class Flight:
         self.flight_plan: FlightPlan = CustomFlightPlan(
             package=package, flight=self, custom_waypoints=[]
         )
+
+    def __getstate__(self) -> dict[str, Any]:
+        state = self.__dict__.copy()
+        # Avoid persisting the flight state since that's not (currently) used outside
+        # mission generation. This is a bit of a hack for the moment and in the future
+        # we will need to persist the flight state, but for now keep it out of save
+        # compat (it also contains a generator that cannot be pickled).
+        del state["state"]
+        return state
+
+    def __setstate__(self, state: dict[str, Any]) -> None:
+        state["state"] = Uninitialized(self, state["squadron"].settings)
+        self.__dict__.update(state)
+
+    @property
+    def departure(self) -> ControlPoint:
+        return self.squadron.location
+
+    @property
+    def arrival(self) -> ControlPoint:
+        return self.squadron.arrival
 
     @property
     def count(self) -> int:
@@ -98,6 +123,18 @@ class Flight:
         self.roster.clear()
         self.squadron.claim_inventory(-self.count)
 
+    def max_takeoff_fuel(self) -> Optional[float]:
+        # Special case so Su 33 and C101 can take off
+        unit_type = self.unit_type.dcs_unit_type
+        if unit_type == Su_33:
+            if self.flight_type.is_air_to_air:
+                return Su_33.fuel_max / 2.2
+            else:
+                return Su_33.fuel_max * 0.8
+        elif unit_type in {C_101EB, C_101CC}:
+            return unit_type.fuel_max * 0.5
+        return None
+
     def __repr__(self) -> str:
         if self.custom_name:
             return f"{self.custom_name} {self.count} x {self.unit_type}"
@@ -107,3 +144,12 @@ class Flight:
         if self.custom_name:
             return f"{self.custom_name} {self.count} x {self.unit_type}"
         return f"[{self.flight_type}] {self.count} x {self.unit_type}"
+
+    def set_state(self, state: FlightState) -> None:
+        self.state = state
+
+    def on_game_tick(self, time: datetime, duration: timedelta) -> None:
+        self.state.on_game_tick(time, duration)
+
+    def should_halt_sim(self, enemy_aircraft_coverage: AircraftEngagementZones) -> bool:
+        return self.state.should_halt_sim(enemy_aircraft_coverage)

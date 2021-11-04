@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -17,7 +18,10 @@ from game.theater import Airfield, FrontLine
 from game.unitmap import UnitMap
 from gen.airfields import AIRFIELD_DATA
 from gen.naming import namegen
-from .aircraftgenerator import AircraftGenerator, FlightData
+from game.missiongenerator.aircraft.aircraftgenerator import (
+    AircraftGenerator,
+)
+from .aircraft.flightdata import FlightData
 from .airsupport import AirSupport
 from .airsupportgenerator import AirSupportGenerator
 from .beacons import load_beacons_for_terrain
@@ -43,8 +47,9 @@ COMBINED_ARMS_SLOTS = 1
 
 
 class MissionGenerator:
-    def __init__(self, game: Game) -> None:
+    def __init__(self, game: Game, time: datetime) -> None:
         self.game = game
+        self.time = time
         self.mission = Mission(game.theater.terrain)
         self.unit_map = UnitMap()
 
@@ -71,7 +76,7 @@ class MissionGenerator:
         self.add_airfields_to_unit_map()
         self.initialize_registries()
 
-        EnvironmentGenerator(self.mission, self.game.conditions).generate()
+        EnvironmentGenerator(self.mission, self.game.conditions, self.time).generate()
 
         tgo_generator = TgoGenerator(
             self.mission,
@@ -229,6 +234,7 @@ class MissionGenerator:
             self.mission,
             self.game.settings,
             self.game,
+            self.time,
             self.radio_registry,
             self.tacan_registry,
             self.laser_code_registry,

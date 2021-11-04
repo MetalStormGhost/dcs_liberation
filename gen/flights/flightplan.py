@@ -19,35 +19,35 @@ from dcs.mapping import Point
 from dcs.unit import Unit
 from shapely.geometry import Point as ShapelyPoint
 
+from game.ato.flighttype import FlightType
+from game.ato.flightwaypoint import FlightWaypoint
+from game.ato.flightwaypointtype import FlightWaypointType
 from game.ato.starttype import StartType
 from game.data.doctrine import Doctrine
 from game.dcs.aircrafttype import FuelConsumption
-from game.flightplan import IpZoneGeometry, JoinZoneGeometry, HoldZoneGeometry
+from game.flightplan import HoldZoneGeometry, IpZoneGeometry, JoinZoneGeometry
 from game.theater import (
     Airfield,
+    ConflictTheater,
     ControlPoint,
     FrontLine,
     MissionTarget,
+    NavalControlPoint,
     SamGroundObject,
     TheaterGroundObject,
-    NavalControlPoint,
-    ConflictTheater,
 )
 from game.theater.theatergroundobject import (
+    BuildingGroundObject,
     EwrGroundObject,
     NavalGroundObject,
-    BuildingGroundObject,
 )
-from game.utils import Distance, Heading, Speed, feet, meters, nautical_miles, knots
+from game.utils import Distance, Heading, Speed, feet, knots, meters, nautical_miles
 from .closestairfields import ObjectiveDistanceCache
-from game.ato.flighttype import FlightType
-from game.ato.flightwaypointtype import FlightWaypointType
-from game.ato.flightwaypoint import FlightWaypoint
-from game.ato.flight import Flight
 from .traveltime import GroundSpeed, TravelTime
 from .waypointbuilder import StrikeTarget, WaypointBuilder
 
 if TYPE_CHECKING:
+    from game.ato.flight import Flight
     from game.ato.package import Package
     from game.coalition import Coalition
     from game.threatzones import ThreatZones
@@ -125,6 +125,30 @@ class FlightPlan:
 
     def speed_between_waypoints(self, a: FlightWaypoint, b: FlightWaypoint) -> Speed:
         return self.best_speed_between_waypoints(a, b)
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return set()
+
+    def fuel_consumption_between_points(
+        self, a: FlightWaypoint, b: FlightWaypoint
+    ) -> Optional[float]:
+        ppm = self.fuel_rate_to_between_points(a, b)
+        if ppm is None:
+            return None
+        distance = meters(a.position.distance_to_point(b.position))
+        return distance.nautical_miles * ppm
+
+    def fuel_rate_to_between_points(
+        self, a: FlightWaypoint, b: FlightWaypoint
+    ) -> Optional[float]:
+        if self.flight.unit_type.fuel_consumption is None:
+            return None
+        if a.waypoint_type is FlightWaypointType.TAKEOFF:
+            return self.flight.unit_type.fuel_consumption.climb
+        if b in self.combat_speed_waypoints:
+            return self.flight.unit_type.fuel_consumption.combat
+        return self.flight.unit_type.fuel_consumption.cruise
 
     @property
     def tot_waypoint(self) -> Optional[FlightWaypoint]:
@@ -343,8 +367,12 @@ class FormationFlightPlan(LoiterFlightPlan):
         raise NotImplementedError
 
     @property
-    def package_speed_waypoints(self) -> Set[FlightWaypoint]:
+    def package_speed_waypoints(self) -> set[FlightWaypoint]:
         raise NotImplementedError
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return self.package_speed_waypoints
 
     @property
     def tot_waypoint(self) -> Optional[FlightWaypoint]:
@@ -513,6 +541,10 @@ class CasFlightPlan(PatrollingFlightPlan):
             yield self.divert
         yield self.bullseye
 
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.patrol_start, self.target, self.patrol_end}
+
     def request_escort_at(self) -> Optional[FlightWaypoint]:
         return self.patrol_start
 
@@ -540,6 +572,10 @@ class TarCapFlightPlan(PatrollingFlightPlan):
         if self.divert is not None:
             yield self.divert
         yield self.bullseye
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.patrol_start, self.patrol_end}
 
     @property
     def tot_offset(self) -> timedelta:
@@ -595,7 +631,7 @@ class StrikeFlightPlan(FormationFlightPlan):
         yield self.bullseye
 
     @property
-    def package_speed_waypoints(self) -> Set[FlightWaypoint]:
+    def package_speed_waypoints(self) -> set[FlightWaypoint]:
         return {
             self.ingress,
             self.split,
@@ -703,6 +739,10 @@ class SweepFlightPlan(LoiterFlightPlan):
         if self.divert is not None:
             yield self.divert
         yield self.bullseye
+
+    @property
+    def combat_speed_waypoints(self) -> set[FlightWaypoint]:
+        return {self.sweep_end}
 
     @property
     def tot_waypoint(self) -> Optional[FlightWaypoint]:
