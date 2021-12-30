@@ -8,7 +8,6 @@ from dcs.weapons_data import Weapons
 class VSN_A6A(PlaneType):
     id = "VSN_A6A"
     flyable = True
-    group_size_max = 1
     height = 4.57
     width = 10.15
     length = 17.98
@@ -235,7 +234,7 @@ class VSN_A6A(PlaneType):
     # ERRR {ac94375e-aa45-491e-858b-a8b93ee8b959}
     # ERRR <CLEAN>
 
-    pylons: Set[int] = {1, 2, 3, 4, 5}
+    pylons = {1, 2, 3, 4, 5}
 
     tasks = [
         task.Escort,
