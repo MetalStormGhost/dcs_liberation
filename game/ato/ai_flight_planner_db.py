@@ -112,7 +112,7 @@ from dcs.unittype import FlyingType
 
 from game.dcs.aircrafttype import AircraftType
 from pydcs_extensions.a4ec.a4ec import A_4E_C
-from pydcs_extensions.f104.f104 import VSN_F104G, VSN_F104S, VSN_F104S_AG
+from pydcs_extensions.a6a.a6a import VSN_A6A
 from pydcs_extensions.f22a.f22a import F_22A
 from pydcs_extensions.hercules.hercules import Hercules
 from pydcs_extensions.jas39.jas39 import JAS39Gripen, JAS39Gripen_AG
@@ -197,6 +197,7 @@ CAS_CAPABLE = [
     AV8BNA,
     A_10A,
     B_1B,
+    VSN_A6A,
     A_4E_C,
     F_14B,
     F_14A_135_GR,
@@ -288,6 +289,7 @@ DEAD_CAPABLE = [
     Tu_160,
     Tu_95MS,
     H_6J,
+    VSN_A6A,
     A_20G,
     Ju_88A4,
     VSN_F104S_AG,
@@ -320,6 +322,7 @@ STRIKE_CAPABLE = [
     Tornado_GR4,
     F_16C_50,
     FA_18C_hornet,
+    VSN_A6A,
     AV8BNA,
     JF_17,
     F_16A,
@@ -413,6 +416,7 @@ RUNWAY_ATTACK_CAPABLE = [
     AJS37,
     F_16C_50,
     FA_18C_hornet,
+    VSN_A6A,
     AV8BNA,
     JF_17,
     F_16A,

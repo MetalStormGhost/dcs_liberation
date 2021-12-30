@@ -158,6 +158,7 @@ class NewGameWizard(QtWidgets.QWizard):
         )
         mod_settings = ModSettings(
             a4_skyhawk=self.field("a4_skyhawk"),
+            a6a_intruder=self.field("a6a_intruder"),
             f22_raptor=self.field("f22_raptor"),
             f104_starfighter=self.field("f104_starfighter"),
             hercules=self.field("hercules"),
@@ -648,6 +649,8 @@ class GeneratorOptions(QtWidgets.QWizardPage):
         modSettingsGroup = QtWidgets.QGroupBox("Mod Settings")
         a4_skyhawk = QtWidgets.QCheckBox()
         self.registerField("a4_skyhawk", a4_skyhawk)
+        a6a_intruder = QtWidgets.QCheckBox()
+        self.registerField("a6a_intruder", a4_skyhawk)
         hercules = QtWidgets.QCheckBox()
         self.registerField("hercules", hercules)
         uh_60l = QtWidgets.QCheckBox()
@@ -676,6 +679,9 @@ class GeneratorOptions(QtWidgets.QWizardPage):
             QtWidgets.QLabel("A-4E Skyhawk (version 2.0.0)"), modLayout_row, 0
         )
         modLayout.addWidget(a4_skyhawk, modLayout_row, 1)
+        modLayout_row += 1
+        modLayout.addWidget(QtWidgets.QLabel("A-6A Intruder"), modLayout_row, 0)
+        modLayout.addWidget(a6a_intruder, modLayout_row, 1)
         modLayout_row += 1
         modLayout.addWidget(QtWidgets.QLabel("F-22A Raptor"), modLayout_row, 0)
         modLayout.addWidget(f22_raptor, modLayout_row, 1)
