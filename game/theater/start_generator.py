@@ -209,7 +209,7 @@ class CarrierGroundObjectGenerator(ControlPointGroundObjectGenerator):
         if not super().generate():
             return False
 
-        carriers = self.faction.carriers
+        carriers = self.game.carriers[self.faction.name]
         if not carriers:
             logging.info(
                 f"Skipping generation of {self.control_point.name} because "
@@ -234,20 +234,18 @@ class CarrierGroundObjectGenerator(ControlPointGroundObjectGenerator):
         carrier_type = ship_type_from_name(group.units[0].type)
         if (
             self.control_point.preferred_name
-            and self.control_point.preferred_name in self.faction.carriers[carrier_type]
+            and self.control_point.preferred_name in carriers[carrier_type]
         ):
             self.control_point.name = self.control_point.preferred_name
         else:
             # Otherwise pick randomly from the names specified for that particular carrier type
-            carrier_names = self.faction.carriers[carrier_type]
+            carrier_names = carriers[carrier_type]
             self.control_point.name = random.choice(carrier_names)
         # Prevents duplicate carrier or LHA names in campaigns with more that one of either.
-        for carrier_type_key in self.faction.carriers:
-            for carrier_name in self.faction.carriers[carrier_type_key]:
+        for carrier_type_key in carriers:
+            for carrier_name in carriers[carrier_type_key]:
                 if carrier_name == self.control_point.name:
-                    self.faction.carriers[carrier_type_key].remove(
-                        self.control_point.name
-                    )
+                    carriers[carrier_type_key].remove(self.control_point.name)
         return True
 
 
@@ -256,7 +254,7 @@ class LhaGroundObjectGenerator(ControlPointGroundObjectGenerator):
         if not super().generate():
             return False
 
-        lha_names = self.faction.helicopter_carrier_names
+        lha_names = self.game.helicopter_carrier_names[self.faction.name]
         if not lha_names:
             logging.info(
                 f"Skipping generation of {self.control_point.name} because "
@@ -276,7 +274,7 @@ class LhaGroundObjectGenerator(ControlPointGroundObjectGenerator):
         self.control_point.connected_objectives.append(g)
         self.control_point.name = random.choice(lha_names)
         # Prevents duplicate carrier or LHA names in campaigns with more that one of either.
-        self.faction.helicopter_carrier_names.remove(self.control_point.name)
+        lha_names.remove(self.control_point.name)
         return True
 
 
