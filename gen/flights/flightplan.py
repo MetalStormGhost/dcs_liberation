@@ -1848,7 +1848,7 @@ class FlightPlanBuilder:
 
         racetrack_half_distance = Distance.from_nautical_miles(20).meters
 
-        patrol_duration = timedelta(hours=1)
+        patrol_duration = self.coalition.game.settings.desired_tanker_on_station_time
 
         location = self.package.target
 
