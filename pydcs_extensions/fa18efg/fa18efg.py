@@ -1,7 +1,6 @@
-from typing import Any, Tuple
 from dcs.planes import FA_18C_hornet
-from dcs.weapons_data import Weapons
 
+from pydcs_extensions.pylon_injector import inject_pylons
 from pydcs_extensions.weapon_injector import inject_weapons
 from qt_ui.uiconstants import AIRCRAFT_ICONS, AIRCRAFT_BANNERS
 
@@ -75,16 +74,6 @@ class FA18EFGPylon10:
 
 
 inject_weapons(WeaponsFA18EFG)
-
-
-def inject_pylons(to_pylon: Any, from_pylon: Any) -> None:
-    for key, value in from_pylon.__dict__.items():
-        print(f"pylon key: {key}")
-        print(f"pylon value: {value}")
-        if key.startswith("__"):
-            continue
-        if isinstance(value, Tuple):
-            setattr(to_pylon, key, value)
 
 
 def inject_FA18EFG() -> None:
