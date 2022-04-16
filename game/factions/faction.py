@@ -32,6 +32,7 @@ from game.dcs.groundunittype import GroundUnitType
 from game.dcs.shipunittype import ShipUnitType
 from game.armedforces.forcegroup import ForceGroup
 from game.dcs.unittype import UnitType
+from pydcs_extensions.fa18efg.fa18efg import inject_FA18EFG
 
 if TYPE_CHECKING:
     from game.theater.start_generator import ModSettings
@@ -357,6 +358,8 @@ class Faction:
             self.remove_vehicle("SAM SA-14 Strela-3 manpad")
             self.remove_vehicle("SAM SA-24 Igla-S manpad")
             self.remove_vehicle("Polyana-D4M1 C2 node")
+        if mod_settings.fa_18efg:
+            inject_FA18EFG()
 
     def remove_aircraft(self, name: str) -> None:
         for i in self.aircrafts:
