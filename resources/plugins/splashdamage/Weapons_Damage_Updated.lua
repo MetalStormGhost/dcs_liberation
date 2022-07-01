@@ -165,7 +165,7 @@ local function track_wpns()
             if wpnData.init then
               if explTable[wpnData.name] then
                 --env.info(wpnData.init.." opened a cluster "..wpnData.name)
-                tracked_clusters[wpnData.init] = { wpn = wpnData.name, init = wpnData.init, time = timer.getAbsTime() }
+                tracked_clusters[wpnData.init] = { wpn = wpnData.name, init = wpnData.init, time = timer.getTime() }
               end
             end
           else
@@ -188,8 +188,8 @@ local function track_wpns()
 					--trigger.action.smoke(impactPoint, 0)
 			end
 	      end
-		  tracked_weapons[wpn_id_] = nil -- remove from tracked weapons first.         
 		end
+        tracked_weapons[wpn_id_] = nil -- remove from tracked weapons first.
 	end
 --  env.info("Weapon Track End")
 end
@@ -246,6 +246,7 @@ function onWpnEvent(event)
           end
         end
       end
+      tracked_clusters[event.initiator:getName()] = nil -- remove from tracked submunitions
     end
   end
 end
