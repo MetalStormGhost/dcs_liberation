@@ -175,10 +175,10 @@ local function track_wpns()
 			local impactPoint
 			if not ip then -- use last calculated IP
 				impactPoint = wpnData.pos
-	--      	trigger.action.outText("Impact Point:\nPos X: " .. impactPoint.x .. "\nPos Z: " .. impactPoint.z, 2)
+				--trigger.action.outText("Impact Point:\nPos X: " .. impactPoint.x .. "\nPos Z: " .. impactPoint.z, 2)
 			else -- use intersection point
 				impactPoint = ip
-	--        trigger.action.outText("Impact Point:\nPos X: " .. impactPoint.x .. "\nPos Z: " .. impactPoint.z, 2)
+				--trigger.action.outText("Impact Point:\nPos X: " .. impactPoint.x .. "\nPos Z: " .. impactPoint.z, 2)
 			end
 			--env.info("Weapon is gone") -- Got to here -- 
 			--trigger.action.outText("Weapon Type was: ".. wpnData.name, 20)
@@ -188,8 +188,8 @@ local function track_wpns()
 					--trigger.action.smoke(impactPoint, 0)
 			end
 	      end
+		tracked_weapons[wpn_id_] = nil -- remove from tracked weapons first.
 		end
-        tracked_weapons[wpn_id_] = nil -- remove from tracked weapons first.
 	end
 --  env.info("Weapon Track End")
 end
@@ -221,28 +221,30 @@ function onWpnEvent(event)
         -- Max shell flight time exceeded, remove from shooter array if exists
         --env.info("Removing "..event.initiator:getName().." from tracked submunitions")
         tracked_clusters[event.initiator:getName()] = nil -- remove from tracked submunitions
-      end
+      else
       --env.info(weapon.." hit a target")
-      if event.target then
-        local impactPoint = event.target:getPosition().p
-        if clusterEffectsEnable and explTable[weapon] then
-          --env.info(weapon.." hit "..event.target:getTypeName())
-          --env.info('Impact point was at: X: ' .. impactPoint.x .. ' Y: ' .. impactPoint.y .. ' Z: ' .. impactPoint.z)
-          if clusterWeaps[weapon] then
-            for i=1,clusterWeaps[weapon]
-            do
-              cluster_radius = math.random(0,cluster_munition_distribution_radius)
-              cluster_angle = 2 * math.pi * (math.random())
-              blastPoint = {
-                x = impactPoint.x + cluster_radius * math.cos(cluster_angle),
-                y = impactPoint.y,
-                z = impactPoint.z + cluster_radius * math.sin(cluster_angle)
-              }
-              --env.info('Generating cluster bomb explosion at: X: ' .. blastPoint.x .. ' Y: ' .. blastPoint.y .. ' Z: ' .. blastPoint.z)
-			  trigger.action.explosion(blastPoint, explTable[weapon])
+        if event.target then
+          local impactPoint = event.target:getPosition().p
+          if clusterEffectsEnable and explTable[weapon] then
+            --env.info(weapon.." hit "..event.target:getTypeName())
+            --env.info('Impact point was at: X: ' .. impactPoint.x .. ' Y: ' .. impactPoint.y .. ' Z: ' .. impactPoint.z)
+            --trigger.action.outText("Cluster Impact Point:\nWeapon: " .. weapon .. "\nPos X: " .. impactPoint.x .. "\nPos Z: " .. impactPoint.z, 2)
+            if clusterWeaps[weapon] then
+              for i=1,clusterWeaps[weapon]
+              do
+                cluster_radius = math.random(0,cluster_munition_distribution_radius)
+                cluster_angle = 2 * math.pi * (math.random())
+                blastPoint = {
+                  x = impactPoint.x + cluster_radius * math.cos(cluster_angle),
+                  y = impactPoint.y,
+                  z = impactPoint.z + cluster_radius * math.sin(cluster_angle)
+                }
+                --env.info('Generating cluster bomb explosion at: X: ' .. blastPoint.x .. ' Y: ' .. blastPoint.y .. ' Z: ' .. blastPoint.z)
+	            trigger.action.explosion(blastPoint, explTable[weapon])
+              end
+            else
+		      trigger.action.explosion(impactPoint, explTable[weapon])
             end
-          else
-			trigger.action.explosion(impactPoint, explTable[weapon])
           end
         end
       end
