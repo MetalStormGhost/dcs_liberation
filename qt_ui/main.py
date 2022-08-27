@@ -302,6 +302,7 @@ def create_game(
             hercules=False,
             jas39_gripen=False,
             su57_felon=False,
+            tornado=False,
             frenchpack=False,
             high_digit_sams=False,
         ),

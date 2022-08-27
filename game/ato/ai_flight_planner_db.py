@@ -126,6 +126,7 @@ from pydcs_extensions.f22a.f22a import F_22A
 from pydcs_extensions.hercules.hercules import Hercules
 from pydcs_extensions.jas39.jas39 import JAS39Gripen, JAS39Gripen_AG
 from pydcs_extensions.su57.su57 import Su_57
+from pydcs_extensions.tornado.tornado import VSN_TornadoGR4, VSN_TornadoIDS
 from pydcs_extensions.uh60l.uh60l import KC130J, UH_60L
 from .flighttype import FlightType
 
@@ -208,6 +209,8 @@ CAS_CAPABLE = [
     F_15E,
     F_16C_50,
     FA_18C_hornet,
+    VSN_TornadoGR4,
+    VSN_TornadoIDS,
     Tornado_GR4,
     Tornado_IDS,
     JAS39Gripen_AG,
@@ -285,7 +288,10 @@ SEAD_CAPABLE = [
     JF_17,
     F_16C_50,
     FA_18C_hornet,
+    VSN_TornadoIDS,
+    VSN_TornadoGR4,
     Tornado_IDS,
+    Tornado_GR4,
     Su_25T,
     Su_25TM,
     F_4E,
@@ -299,7 +305,6 @@ SEAD_CAPABLE = [
     Su_34,
     Su_30,
     MiG_27K,
-    Tornado_GR4,
 ]
 
 
@@ -343,16 +348,18 @@ STRIKE_CAPABLE = [
     H_6J,
     F_15E,
     AJS37,
-    Tornado_GR4,
     F_16C_50,
     FA_18C_hornet,
+    VSN_TornadoGR4,
+    VSN_TornadoIDS,
+    Tornado_GR4,
+    Tornado_IDS,
     AV8BNA,
     JF_17,
     F_16A,
     F_14B,
     F_14A_135_GR,
     JAS39Gripen_AG,
-    Tornado_IDS,
     Su_17M4,
     Su_24M,
     Su_25TM,
@@ -417,6 +424,8 @@ ANTISHIP_CAPABLE = [
     JF_17,
     Su_34,
     Su_30,
+    VSN_TornadoIDS,
+    VSN_TornadoGR4,
     Tornado_IDS,
     Tornado_GR4,
     AV8BNA,
@@ -453,6 +462,7 @@ RUNWAY_ATTACK_CAPABLE = [
     F_14B,
     F_14A_135_GR,
     JAS39Gripen_AG,
+    VSN_TornadoIDS,
     Tornado_IDS,
     Su_17M4,
     Su_24M,
