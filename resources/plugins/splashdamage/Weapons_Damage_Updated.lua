@@ -83,6 +83,8 @@ explTable = {
 	["AN-M64"]	=	180,
 	["AN-M65"]	=	295,
 	["AN-M66A2"]	=	536,
+	["BDU_33"] = 118, -- BDU-33 included to allow T-45 to fly strike (and DEAD) missions
+	["HYDRA_70_M274"] = 7, -- Hydra 70 rocket, M274 smoke warhead included to allow T-45 to fly DEAD missions
 }
 
 local weaponDamageEnable = 1
