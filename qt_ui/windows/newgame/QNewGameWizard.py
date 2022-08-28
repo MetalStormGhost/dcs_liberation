@@ -160,6 +160,7 @@ class NewGameWizard(QtWidgets.QWizard):
             a4_skyhawk=self.field("a4_skyhawk"),
             f22_raptor=self.field("f22_raptor"),
             f104_starfighter=self.field("f104_starfighter"),
+            hawk_t1a=self.field("hawk_t1a"),
             hercules=self.field("hercules"),
             uh_60l=self.field("uh_60l"),
             jas39_gripen=self.field("jas39_gripen"),
@@ -661,6 +662,8 @@ class GeneratorOptions(QtWidgets.QWizardPage):
         self.registerField("f22_raptor", f22_raptor)
         f104_starfighter = QtWidgets.QCheckBox()
         self.registerField("f104_starfighter", f104_starfighter)
+        hawk_t1a = QtWidgets.QCheckBox()
+        self.registerField("hawk_t1a", hawk_t1a)
         jas39_gripen = QtWidgets.QCheckBox()
         self.registerField("jas39_gripen", jas39_gripen)
         su57_felon = QtWidgets.QCheckBox()
@@ -687,6 +690,9 @@ class GeneratorOptions(QtWidgets.QWizardPage):
         modLayout_row += 1
         modLayout.addWidget(QtWidgets.QLabel("F-104 Starfighter"), modLayout_row, 0)
         modLayout.addWidget(f104_starfighter, modLayout_row, 1)
+        modLayout_row += 1
+        modLayout.addWidget(QtWidgets.QLabel("Hawk T1A"), modLayout_row, 0)
+        modLayout.addWidget(hawk_t1a, modLayout_row, 1)
         modLayout_row += 1
         modLayout.addWidget(
             QtWidgets.QLabel("C-130J-30 Super Hercules"), modLayout_row, 0

@@ -286,6 +286,8 @@ class Faction:
         # aircraft
         if not mod_settings.a4_skyhawk:
             self.remove_aircraft("A-4E-C")
+        if not mod_settings.hawk_t1a:
+            self.remove_aircraft("Hawk-T1A")
         if not mod_settings.hercules:
             self.remove_aircraft("Hercules")
         if not mod_settings.uh_60l:

@@ -123,6 +123,7 @@ from game.dcs.aircrafttype import AircraftType
 from pydcs_extensions.a4ec.a4ec import A_4E_C
 from pydcs_extensions.f104.f104 import VSN_F104G, VSN_F104S, VSN_F104S_AG
 from pydcs_extensions.f22a.f22a import F_22A
+from pydcs_extensions.hawk_t1a.hawk_t1a import Hawk_T1A
 from pydcs_extensions.hercules.hercules import Hercules
 from pydcs_extensions.jas39.jas39 import JAS39Gripen, JAS39Gripen_AG
 from pydcs_extensions.su57.su57 import Su_57
@@ -181,6 +182,7 @@ CAP_CAPABLE = [
     MiG_15bis,
     C_101CC,
     L_39ZA,
+    Hawk_T1A,
     P_51D_30_NA,
     P_51D,
     SpitfireLFMkIXCW,
@@ -257,6 +259,7 @@ CAS_CAPABLE = [
     F_86F_Sabre,
     C_101CC,
     L_39ZA,
+    Hawk_T1A,
     UH_1H,
     VSN_F104S_AG,
     VSN_F104G,
@@ -318,6 +321,7 @@ DEAD_CAPABLE = SEAD_CAPABLE + [
     Ju_88A4,
     VSN_F104S_AG,
     VSN_F104G,
+    Hawk_T1A,
     P_47D_40,
     P_47D_30bl1,
     P_47D_30,
@@ -391,6 +395,7 @@ STRIKE_CAPABLE = [
     Ju_88A4,
     VSN_F104S_AG,
     VSN_F104G,
+    Hawk_T1A,
     P_47D_40,
     P_47D_30bl1,
     P_47D_30,
@@ -492,6 +497,7 @@ RUNWAY_ATTACK_CAPABLE = [
     Ju_88A4,
     VSN_F104S_AG,
     VSN_F104G,
+    Hawk_T1A,
     P_47D_40,
     P_47D_30bl1,
     P_47D_30,

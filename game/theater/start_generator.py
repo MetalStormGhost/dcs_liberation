@@ -57,6 +57,7 @@ class ModSettings:
     a4_skyhawk: bool = False
     f22_raptor: bool = False
     f104_starfighter: bool = False
+    hawk_t1a: bool = False
     hercules: bool = False
     uh_60l: bool = False
     jas39_gripen: bool = False
